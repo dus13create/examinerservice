@@ -31,8 +31,8 @@ class ExaminerServiceImplTest {
 
     @Test
     void shouldThrowExceptionWhenAmountExceedsTotalQuestions() {
-        when(javaQuestionService.getAll()).thenReturn(javaQuestions);
-        when(mathQuestionService.getAll()).thenReturn(mathQuestions);
+        lenient().when(javaQuestionService.getAll()).thenReturn(javaQuestions);
+        lenient().when(mathQuestionService.getAll()).thenReturn(mathQuestions);
 
         // Всего вопросов 2, запрашиваем 3
         assertThrows(QuestionLimitExceededException.class, () -> out.getQuestions(3));

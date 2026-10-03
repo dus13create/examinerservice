@@ -1,63 +1,73 @@
 package skypro.examinerservice.service;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import skypro.examinerservice.exception.QuestionNotFoundException;
 import skypro.examinerservice.model.Question;
+import skypro.examinerservice.repository.QuestionRepository;
 
 import java.util.Collection;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
+@ExtendWith(MockitoExtension.class)
 class JavaQuestionServiceTest {
 
-    private JavaQuestionService out;
+    @Mock
+    private QuestionRepository questionRepository;
 
-    @BeforeEach
-    void setUp() {
-        out = new JavaQuestionService();
-    }
+    @InjectMocks
+    private JavaQuestionService out;
 
     @Test
     void shouldAddQuestionByStrings() {
+        Question question = new Question("Q1", "A1");
+        when(questionRepository.add(question)).thenReturn(question);
+
         Question actual = out.add("Q1", "A1");
         Question expected = new Question("Q1", "A1");
 
         assertEquals(expected, actual);
-        assertTrue(out.getAll().contains(expected));
     }
 
     @Test
     void shouldAddQuestionByObject() {
         Question question = new Question("Q1", "A1");
+        when(questionRepository.add(question)).thenReturn(question);
+
         Question actual = out.add(question);
 
         assertEquals(question, actual);
-        assertEquals(1, out.getAll().size());
     }
 
     @Test
     void shouldRemoveExistingQuestion() {
         Question question = new Question("Q1", "A1");
-        out.add(question);
+        when(questionRepository.remove(question)).thenReturn(question);
 
         Question removed = out.remove(question);
 
         assertEquals(question, removed);
-        assertTrue(out.getAll().isEmpty());
     }
 
     @Test
     void shouldThrowExceptionWhenRemovingNonExistentQuestion() {
         Question question = new Question("Q_UNKNOWN", "A_UNKNOWN");
+        when(questionRepository.remove(question)).thenThrow(new QuestionNotFoundException("Вопрос не найден"));
 
         assertThrows(QuestionNotFoundException.class, () -> out.remove(question));
     }
 
     @Test
     void shouldReturnAllQuestions() {
-        Question q1 = out.add("Q1", "A1");
-        Question q2 = out.add("Q2", "A2");
+        Question q1 = new Question("Q1", "A1");
+        Question q2 = new Question("Q2", "A2");
+        when(questionRepository.getAll()).thenReturn(List.of(q1, q2));
 
         Collection<Question> all = out.getAll();
 
@@ -68,8 +78,9 @@ class JavaQuestionServiceTest {
 
     @Test
     void shouldReturnRandomQuestion() {
-        Question q1 = out.add("Q1", "A1");
-        Question q2 = out.add("Q2", "A2");
+        Question q1 = new Question("Q1", "A1");
+        Question q2 = new Question("Q2", "A2");
+        when(questionRepository.getAll()).thenReturn(List.of(q1, q2));
 
         Question random = out.getRandomQuestion();
 
@@ -79,6 +90,8 @@ class JavaQuestionServiceTest {
 
     @Test
     void shouldThrowExceptionWhenGetRandomFromEmptyList() {
+        when(questionRepository.getAll()).thenReturn(List.of());
+
         assertThrows(QuestionNotFoundException.class, () -> out.getRandomQuestion());
     }
 }
