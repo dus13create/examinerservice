@@ -11,6 +11,8 @@ public interface QuestionService {
 
     Question remove(Question question);
 
+    Question update(Question question);
+
     Collection<Question> getAll();
 
     Question getRandomQuestion();

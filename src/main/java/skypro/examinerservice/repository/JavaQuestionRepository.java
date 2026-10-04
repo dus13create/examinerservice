@@ -28,6 +28,13 @@ public class JavaQuestionRepository implements QuestionRepository {
     }
 
     @Override
+    public Question update(Question question) {
+        questions.remove(question);
+        questions.add(question);
+        return question;
+    }
+
+    @Override
     public Collection<Question> getAll() {
         return Collections.unmodifiableCollection(questions);
     }

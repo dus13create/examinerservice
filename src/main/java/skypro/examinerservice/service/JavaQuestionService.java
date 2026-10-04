@@ -36,6 +36,11 @@ public class JavaQuestionService implements QuestionService {
     }
 
     @Override
+    public Question update(Question question) {
+        return questionRepository.update(question);
+    }
+
+    @Override
     public Collection<Question> getAll() {
         return questionRepository.getAll();
     }
