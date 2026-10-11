@@ -1,6 +1,7 @@
 package skypro.examinerservice.model;
 
 import jakarta.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "faculties")
@@ -12,14 +13,20 @@ public class Faculty {
 
     private String name;
 
+    private String color;
+
     private String head;
+
+    @OneToMany(mappedBy = "faculty", fetch = FetchType.LAZY)
+    private List<Student> students;
 
     public Faculty() {
     }
 
-    public Faculty(Long id, String name, String head) {
+    public Faculty(Long id, String name, String color, String head) {
         this.id = id;
         this.name = name;
+        this.color = color;
         this.head = head;
     }
 
@@ -45,5 +52,21 @@ public class Faculty {
 
     public void setHead(String head) {
         this.head = head;
+    }
+
+    public String getColor() {
+        return color;
+    }
+
+    public void setColor(String color) {
+        this.color = color;
+    }
+
+    public List<Student> getStudents() {
+        return students;
+    }
+
+    public void setStudents(List<Student> students) {
+        this.students = students;
     }
 }

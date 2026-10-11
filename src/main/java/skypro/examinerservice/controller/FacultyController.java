@@ -5,6 +5,7 @@ import skypro.examinerservice.model.Faculty;
 import skypro.examinerservice.repository.FacultyRepository;
 
 import java.util.Collection;
+import java.util.List;
 
 @RestController
 @RequestMapping("/exam/faculty")
@@ -19,6 +20,11 @@ public class FacultyController {
     @GetMapping
     public Collection<Faculty> getAllFaculties() {
         return facultyRepository.findAll();
+    }
+
+    @GetMapping("/search")
+    public Collection<Faculty> searchFaculties(@RequestParam("term") String term) {
+        return facultyRepository.findByNameOrColorIgnoreCase(term);
     }
 
     @GetMapping("/{id}")
@@ -39,6 +45,7 @@ public class FacultyController {
                 .orElseThrow(() -> new RuntimeException("Faculty not found with id: " + id));
 
         existingFaculty.setName(faculty.getName());
+        existingFaculty.setColor(faculty.getColor());
         existingFaculty.setHead(faculty.getHead());
         return facultyRepository.save(existingFaculty);
     }
@@ -48,5 +55,12 @@ public class FacultyController {
         Faculty faculty = facultyRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Faculty not found with id: " + id));
         facultyRepository.delete(faculty);
+    }
+
+    @GetMapping("/{id}/students")
+    public List<skypro.examinerservice.model.Student> getFacultyStudents(@PathVariable("id") Long id) {
+        Faculty faculty = facultyRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Faculty not found with id: " + id));
+        return faculty.getStudents();
     }
 }
