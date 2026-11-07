@@ -5,6 +5,7 @@ import skypro.examinerservice.model.Student;
 import skypro.examinerservice.repository.StudentRepository;
 
 import java.util.Collection;
+import java.util.List;
 
 @RestController
 @RequestMapping("/exam/student")
@@ -69,5 +70,20 @@ public class StudentController {
             throw new RuntimeException("Student does not belong to any faculty");
         }
         return student.getFaculty();
+    }
+
+    @GetMapping("/count")
+    public long countAllStudents() {
+        return studentRepository.countAll();
+    }
+
+    @GetMapping("/average-age")
+    public Double getAverageAge() {
+        return studentRepository.findAverageAge();
+    }
+
+    @GetMapping("/last-5")
+    public List<Student> getLast5Students() {
+        return studentRepository.findTop5ByOrderByDescId();
     }
 }
