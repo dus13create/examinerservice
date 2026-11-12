@@ -79,7 +79,8 @@ public class StudentController {
 
     @GetMapping("/average-age")
     public Double getAverageAge() {
-        return studentRepository.findAverageAge();
+        Double avg = studentRepository.findAverageAge();
+        return avg != null ? avg : 0.0;
     }
 
     @GetMapping("/last-5")
