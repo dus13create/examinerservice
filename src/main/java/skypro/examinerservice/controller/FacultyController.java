@@ -6,6 +6,7 @@ import skypro.examinerservice.repository.FacultyRepository;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/exam/faculty")
@@ -62,5 +63,12 @@ public class FacultyController {
         Faculty faculty = facultyRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Faculty not found with id: " + id));
         return faculty.getStudents();
+    }
+
+    @GetMapping("/longest-name")
+    public Optional<String> getLongestFacultyName() {
+        return facultyRepository.findAll().stream()
+                .map(Faculty::getName)
+                .max(java.util.Comparator.comparingInt(String::length));
     }
 }

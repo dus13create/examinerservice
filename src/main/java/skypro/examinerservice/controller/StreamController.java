@@ -1,0 +1,15 @@
+package skypro.examinerservice.controller;
+
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+@RequestMapping("/stream")
+public class StreamController {
+
+    @GetMapping("/sum")
+    public long sum() {
+        return 1_000_000L * (1_000_000L + 1) / 2;
+    }
+}

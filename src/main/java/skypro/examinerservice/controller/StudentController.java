@@ -6,6 +6,7 @@ import skypro.examinerservice.repository.StudentRepository;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/exam/student")
@@ -86,5 +87,27 @@ public class StudentController {
     @GetMapping("/last-5")
     public List<Student> getLast5Students() {
         return studentRepository.findTop5ByOrderByDescId();
+    }
+
+    @GetMapping("/names-starting-with-a")
+    public List<String> getNamesStartingWithA() {
+        return studentRepository.findAll().stream()
+                .filter(s -> s.getName() != null && s.getName().startsWith("A"))
+                .map(Student::getName)
+                .map(String::toUpperCase)
+                .sorted()
+                .collect(Collectors.toList());
+    }
+
+    @GetMapping("/average-age-stream")
+    public Double getAverageAgeStream() {
+        List<Student> students = studentRepository.findAll();
+        if (students.isEmpty()) {
+            return 0.0;
+        }
+        return students.stream()
+                .mapToInt(Student::getAge)
+                .average()
+                .orElse(0.0);
     }
 }
