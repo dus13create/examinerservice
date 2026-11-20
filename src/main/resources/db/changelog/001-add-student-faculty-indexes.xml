@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="001" author="dus">
+        <createIndex tableName="students"
+                     indexName="idx_student_name"
+                     unique="false">
+            <column name="name"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="002" author="dus">
+        <createIndex tableName="faculties"
+                     indexName="idx_faculty_name_color"
+                     unique="false">
+            <column name="name"/>
+            <column name="color"/>
+        </createIndex>
+    </changeSet>
+
+</databaseChangeLog>
