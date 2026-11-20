@@ -110,4 +110,72 @@ public class StudentController {
                 .average()
                 .orElse(0.0);
     }
+
+    @GetMapping("/print-parallel")
+    public String printParallel() {
+        List<Student> students = studentRepository.findAll();
+
+        // Первые два имени — в основном потоке
+        if (students.size() > 0) System.out.println(Thread.currentThread().getName() + ": " + students.get(0).getName());
+        if (students.size() > 1) System.out.println(Thread.currentThread().getName() + ": " + students.get(1).getName());
+
+        // Третий и четвертый — в параллельном потоке
+        Thread thread1 = new Thread(() -> {
+            if (students.size() > 2) System.out.println(Thread.currentThread().getName() + ": " + students.get(2).getName());
+            if (students.size() > 3) System.out.println(Thread.currentThread().getName() + ": " + students.get(3).getName());
+        });
+        thread1.start();
+
+        // Пятый и шестой — в ещё одном параллельном потоке
+        Thread thread2 = new Thread(() -> {
+            if (students.size() > 4) System.out.println(Thread.currentThread().getName() + ": " + students.get(4).getName());
+            if (students.size() > 5) System.out.println(Thread.currentThread().getName() + ": " + students.get(5).getName());
+        });
+        thread2.start();
+
+        try {
+            thread1.join();
+            thread2.join();
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+
+        return "Names printed in parallel";
+    }
+
+    private synchronized void printName(String name) {
+        System.out.println(Thread.currentThread().getName() + ": " + name);
+    }
+
+    @GetMapping("/print-synchronized")
+    public String printSynchronized() {
+        List<Student> students = studentRepository.findAll();
+
+        // Первые два имени — в основном потоке
+        if (students.size() > 0) printName(students.get(0).getName());
+        if (students.size() > 1) printName(students.get(1).getName());
+
+        // Третий и четвертый — в параллельном потоке
+        Thread thread1 = new Thread(() -> {
+            if (students.size() > 2) printName(students.get(2).getName());
+            if (students.size() > 3) printName(students.get(3).getName());
+        });
+        thread1.start();
+
+        // Пятый и шестой — в ещё одном параллельном потоке
+        Thread thread2 = new Thread(() -> {
+            if (students.size() > 4) printName(students.get(4).getName());
+            if (students.size() > 5) printName(students.get(5).getName());
+        });
+        thread2.start();
+
+        try {
+            thread1.join();
+            thread2.join();
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+
+        return "Names printed with synchronization";
+    }
 }
